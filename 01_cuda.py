@@ -1,6 +1,6 @@
-#%%
-# start with cuda
 
+# start with cuda
+#  MH, October 2026
 
 #%%
 #  A) libs and start, system info
@@ -33,12 +33,18 @@ print("CPU threads     :", n_threads)
 
 # GPU
 cuda_available = torch.cuda.is_available()
-print(f"CUDA Available  : {cuda_available}")
+print(f"\nCUDA Available     : {cuda_available}")
 if cuda_available:
     device_count = torch.cuda.device_count()
     device_name = torch.cuda.get_device_name(0)
-    print(f"GPU Name        : {device_name}")
+    print(f"GPU Name           : {device_name}")
 
+    cuda_ver = torch.version.cuda
+    device_name = torch.cuda.get_device_name(0)
+    cap_major, cap_minor = torch.cuda.get_device_capability(0)
+    
+    print(f"CUDA Version       : {cuda_ver}")
+    print(f"Compute Capability : sm_{cap_major}{cap_minor}")
 
 
 #%%
@@ -59,7 +65,7 @@ def run_matmul(a, b, num_threads=1):
     return
 
 #  loop over n threads 1,2,4,8 ...
-N = 10000
+N = 8000
 PRECISION = torch.float32
 a_cpu = torch.randn(N, N, dtype=PRECISION)
 b_cpu = torch.randn(N, N, dtype=PRECISION)
@@ -72,6 +78,11 @@ while num_threads <= n_threads:
 
 #%%
 # C) GPU
+
+N = 8000
+PRECISION = torch.float32
+a_cpu = torch.randn(N, N, dtype=PRECISION)
+b_cpu = torch.randn(N, N, dtype=PRECISION)
 
 
 a_gpu = a_cpu.to("cuda")
@@ -88,5 +99,7 @@ torch.cuda.synchronize()  # Force CPU to wait until GPU finishes computation
 gpu_time = time.perf_counter() - start
 
 gflops = (2 * N**3) / (gpu_time * 1e9)  # Calculate GFLOPS
-print(f"GPU (GTX 1060):    {gpu_time:.4f} seconds, GFLOPS: {gflops:.1f}\n")
+print(f"GPU:    {gpu_time:.4f} seconds, GFLOPS: {gflops:.1f}\n")
 
+
+# %%
