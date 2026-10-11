@@ -42,44 +42,38 @@ if cuda_available:
 
 
 #%%
-# B) single-core CPU 
+# B) CPU 
 
+def run_matmul(a, b, num_threads=1):
 
-# Define matrix size (4000 x 4000 float32 elements)
-N = 4000
-print(f"Benchmarking {N}x{N} Matrix Multiplication...\n")
+    start = time.perf_counter()
+    torch.set_num_threads(num_threads)
+    _ = torch.matmul(a, b)
+    end = time.perf_counter()
 
-# 1. CPU Single-Core Benchmark
-torch.set_num_threads(1)
-a_cpu = torch.randn(N, N)
-b_cpu = torch.randn(N, N)
+    time_taken = end - start
+    gflops = (2 * N**3) / (time_taken * 1e9)  # Calculate GFLOPS
+    # print(f"threads: {num_threads}, time: {time_taken:.2f} s, GFLOPS: {gflops:.1f}")
+    print(f"threads: {num_threads:>2d}, time: {time_taken:>6.2f} s, GFLOPS: {gflops:>6.1f}")
 
-start = time.perf_counter()
-_ = torch.matmul(a_cpu, b_cpu)
-cpu_1thread_time = time.perf_counter() - start
-print(f"CPU (1 Thread):   {cpu_1thread_time:.4f} seconds")
+    return
 
+#  loop over n threads 1,2,4,8 ...
+N = 10000
+PRECISION = torch.float32
+a_cpu = torch.randn(N, N, dtype=PRECISION)
+b_cpu = torch.randn(N, N, dtype=PRECISION)
 
-# 2. CPU Multi-Core Benchmark (All 16 threads on Ryzen 5700X)
-torch.set_num_threads(8)
-start = time.perf_counter()
-_ = torch.matmul(a_cpu, b_cpu)
-cpu_multithread_time = time.perf_counter() - start
-print(f"CPU (16 Threads):  {cpu_multithread_time:.4f} seconds")
-
-
-flops = (2 * N**3) / 1e9  # 128 GFLOPs
-
-print(f"1 Thread  :  {flops / cpu_1thread_time:.2f} GFLOPS")
-print(f"16 Threads: {flops / cpu_multithread_time:.2f} GFLOPS")
-
-
+num_threads = 1
+while num_threads <= n_threads:
+    run_matmul(a_cpu, b_cpu, num_threads=num_threads)
+    num_threads *= 2
 
 
 #%%
+# C) GPU
 
 
-# 3. GPU Benchmark (GTX 1060)
 a_gpu = a_cpu.to("cuda")
 b_gpu = b_cpu.to("cuda")
 
@@ -93,8 +87,6 @@ _ = torch.matmul(a_gpu, b_gpu)
 torch.cuda.synchronize()  # Force CPU to wait until GPU finishes computation
 gpu_time = time.perf_counter() - start
 
-print(f"GPU (GTX 1060):    {gpu_time:.4f} seconds\n")
+gflops = (2 * N**3) / (gpu_time * 1e9)  # Calculate GFLOPS
+print(f"GPU (GTX 1060):    {gpu_time:.4f} seconds, GFLOPS: {gflops:.1f}\n")
 
-# Speedup comparison
-print(f"--> GPU Speedup vs 1 Thread:  {cpu_1thread_time / gpu_time:.2f}x faster")
-print(f"--> GPU Speedup vs 16 Threads: {cpu_multithread_time / gpu_time:.2f}x faster")
