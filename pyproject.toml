@@ -1,0 +1,32 @@
+[project]
+name = "cuda-cpu"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "MH", email = "mh@hloucha.de" }
+]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "ipykernel>=7.4.0",
+    "numpy>=2.5.4",
+    "pandas>=3.0.6",
+    "torch",
+    "torchvision",
+]
+
+[project.scripts]
+cuda-cpu = "cuda_cpu:main"
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"
+
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu121" }
+torchvision = { index = "pytorch-cu121" }
