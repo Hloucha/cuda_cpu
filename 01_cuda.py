@@ -31,6 +31,7 @@ print("CPU cores       :", n_cores)
 print("CPU threads     :", n_threads)
 
 
+#%%
 # GPU
 cuda_available = torch.cuda.is_available()
 print(f"\nCUDA Available     : {cuda_available}")
@@ -73,13 +74,13 @@ b_cpu = torch.randn(N, N, dtype=PRECISION)
 num_threads = 1
 while num_threads <= n_threads:
     run_matmul(a_cpu, b_cpu, num_threads=num_threads)
-    num_threads *= 2
+    num_threads = num_threads + 1
 
 
 #%%
 # C) GPU
 
-N = 8000
+N = 10000
 PRECISION = torch.float32
 a_cpu = torch.randn(N, N, dtype=PRECISION)
 b_cpu = torch.randn(N, N, dtype=PRECISION)
