@@ -66,7 +66,7 @@ def run_matmul(a, b, num_threads=1):
     return
 
 #  loop over n threads 1,2,4,8 ...
-N = 8000
+N = 3400
 PRECISION = torch.float32
 a_cpu = torch.randn(N, N, dtype=PRECISION)
 b_cpu = torch.randn(N, N, dtype=PRECISION)
@@ -74,13 +74,13 @@ b_cpu = torch.randn(N, N, dtype=PRECISION)
 num_threads = 1
 while num_threads <= n_threads:
     run_matmul(a_cpu, b_cpu, num_threads=num_threads)
-    num_threads = num_threads + 1
+    num_threads = num_threads * 2
 
 
 #%%
 # C) GPU
 
-N = 10000
+N = 3400
 PRECISION = torch.float32
 a_cpu = torch.randn(N, N, dtype=PRECISION)
 b_cpu = torch.randn(N, N, dtype=PRECISION)
