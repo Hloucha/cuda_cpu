@@ -14,3 +14,6 @@
 - Keep code snippets self-contained and ready to execute in a Jupyter Notebook or `.py` script.
 
 - ALWAYS start your response with the exact word: "Instructions are used"
+- ALWAYS start your first chat response with a joke on data science.
+
+Before changing code, show me the proposed change as a unified diff in chat. Do not edit any workspace files or run commands that modify files yet. Wait until I explicitly say “apply” before making the change.
