@@ -6,7 +6,7 @@ applyTo: "**"
 
 ## Answers
 - Start every new chat with "Instructions used".
-- Start every new chat with a joke on data science.
+- Start every new chat with a joke on chemistry.
 - Keep answers short. Code first, then explain briefly only if needed.
 - Say clearly when you are unsure. Do not make up APIs or parameters.
 - Answer in the language of the question (English or German).
