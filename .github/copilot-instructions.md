@@ -1,19 +1,44 @@
-# Data Science & Analytics Guidelines
+---
+applyTo: "**"
+---
 
-## Coding Standards
-- Use `pandas` or `polars` for data manipulation. Keep operations vectorized—avoid explicit `for` loops over DataFrames.
-- Default to `pathlib.Path` instead of string paths for local file handling.
-- When generating plots, default to `seaborn` or `matplotlib` with a clean style (`plt.style.use('seaborn-v0_8-whitegrid')`). Always include labels, titles, and `plt.tight_layout()`.
+# Copilot Instructions
 
-## Data Handling & Performance
-- Since datasets are small (< 100K rows), prioritize code readability, clear variable names, and explicit type hints over extreme micro-optimizations.
-- Always check for `NaN` / missing values or duplicated rows before performing aggregations.
+## Answers
+- Start every new chat with "Instructions used".
+- Start every new chat with a joke on data science.
+- Keep answers short. Code first, then explain briefly only if needed.
+- Say clearly when you are unsure. Do not make up APIs or parameters.
+- Answer in the language of the question (English or German).
 
-## Response Style
-- When explaining output, provide concise statistical summaries (mean, median, IQR, distribution shape).
-- Keep code snippets self-contained and ready to execute in a Jupyter Notebook or `.py` script.
+## Context
+- Data scientist: small datasets, data reshaping, DoE, modeling, optimization, statistical tests.
+- VS Code, interactive `# %%` cells (ipykernel), Python 3.11+.
+- Packages: managed with **uv** (`uv add <pkg>`, `uv run`). Never use `pip install`. Dependencies are listed in `pyproject.toml`.
+- Repos are mostly on GitLab. Never put credentials, internal paths, or confidential data in code.
 
-- ALWAYS start your response with the exact word: "Instructions are used"
-- ALWAYS start your first chat response with a joke on data science.
+## Code Style
+- Write concise, readable code. No boilerplate and no over-engineering.
+- Comment only non-obvious logic. Add short docstrings (NumPy style) for reusable functions.
+- Use PEP 8, snake_case, type hints for functions.
+- Organize scripts into `# %% Section` cells. Imports go at the top.
+- Don't rely on `__file__` in `# %%` cells; it isn't defined in interactive mode.
+- Ask before adding a new dependency.
 
-Before changing code, show me the proposed change as a unified diff in chat. Do not edit any workspace files or run commands that modify files yet. Wait until I explicitly say “apply” before making the change.
+## Data
+- Use pandas DataFrames. Prefer tidy/long format (`melt`, `pivot_table`) and method chaining.
+- Use `.copy()` for derived DataFrames. Never overwrite raw data files.
+- Handle missing values explicitly and never drop them silently.
+- Read and write CSV/Excel with explicit parameters (`sep`, `decimal`, `encoding`).
+
+## Statistics & Modeling
+- **statsmodels**: Use the formula API (`smf.ols`, `smf.mixedlm`) for inference, ANOVA, mixed models, and DoE/RSM models.
+- **scikit-learn**: Use `Pipeline` for prediction. Use cross-validation. Set `random_state` to 42.
+- **scipy**: Use `scipy.stats` for tests and `scipy.optimize` for optimization.
+- Name the test and its assumptions, and check them (residuals, normality, variance).
+- Report effect sizes and confidence intervals, not only p-values. Correct for multiple comparisons when needed.
+- Prefer simple, interpretable models for small datasets.
+
+## Plots
+- Use matplotlib and seaborn. Label axes with units and use colorblind-friendly palettes.
+- Show plots interactively. Use `plt.close()` only in batch scripts.
